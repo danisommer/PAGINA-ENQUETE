@@ -24,44 +24,85 @@ app.use(express.json());
 
 // Rota para criar uma nova enquete
 app.post('/enquetes', (req, res) => {
-    // Implementação da lógica para criar uma nova enquete
+  const { titulo, data_inicio, data_termino } = req.body;
+  const query = 'INSERT INTO enquetes (titulo, data_inicio, data_termino) VALUES (?, ?, ?)';
+  connection.query(query, [titulo, data_inicio, data_termino], (err, result) => {
+      if (err) throw err;
+      res.status(201).send('Enquete criada com sucesso');
+  });
 });
 
 // Rota para editar uma enquete existente
 app.put('/enquetes/:id', (req, res) => {
-    // Implementação da lógica para editar uma enquete existente
+  const { titulo, data_inicio, data_termino } = req.body;
+  const id = req.params.id;
+  const query = 'UPDATE enquetes SET titulo = ?, data_inicio = ?, data_termino = ? WHERE id = ?';
+  connection.query(query, [titulo, data_inicio, data_termino, id], (err, result) => {
+      if (err) throw err;
+      res.send('Enquete atualizada com sucesso');
+  });
 });
 
 // Rota para excluir uma enquete existente
 app.delete('/enquetes/:id', (req, res) => {
-    // Implementação da lógica para excluir uma enquete existente
+  const id = req.params.id;
+  const query = 'DELETE FROM enquetes WHERE id = ?';
+  connection.query(query, [id], (err, result) => {
+      if (err) throw err;
+      res.send('Enquete excluída com sucesso');
+  });
 });
 
 // Rota para listar todas as enquetes
 app.get('/enquetes', (req, res) => {
-    // Implementação da lógica para listar todas as enquetes
+  const query = 'SELECT * FROM enquetes';
+  connection.query(query, (err, result) => {
+      if (err) throw err;
+      res.json(result);
+  });
 });
 
 // Rotas para manipulação de opções
 
 // Rota para criar uma nova opção para uma enquete
 app.post('/opcoes', (req, res) => {
-    // Implementação da lógica para criar uma nova opção para uma enquete
+  const { enquete_id, descricao } = req.body;
+  const query = 'INSERT INTO opcoes (enquete_id, descricao) VALUES (?, ?)';
+  connection.query(query, [enquete_id, descricao], (err, result) => {
+      if (err) throw err;
+      res.status(201).send('Opção criada com sucesso');
+  });
 });
 
 // Rota para editar uma opção existente
 app.put('/opcoes/:id', (req, res) => {
-    // Implementação da lógica para editar uma opção existente
+  const { descricao } = req.body;
+  const id = req.params.id;
+  const query = 'UPDATE opcoes SET descricao = ? WHERE id = ?';
+  connection.query(query, [descricao, id], (err, result) => {
+      if (err) throw err;
+      res.send('Opção atualizada com sucesso');
+  });
 });
 
 // Rota para excluir uma opção existente
 app.delete('/opcoes/:id', (req, res) => {
-    // Implementação da lógica para excluir uma opção existente
+  const id = req.params.id;
+  const query = 'DELETE FROM opcoes WHERE id = ?';
+  connection.query(query, [id], (err, result) => {
+      if (err) throw err;
+      res.send('Opção excluída com sucesso');
+  });
 });
 
 // Rota para listar todas as opções de uma enquete
 app.get('/opcoes/:enqueteId', (req, res) => {
-    // Implementação da lógica para listar todas as opções de uma enquete
+  const enqueteId = req.params.enqueteId;
+  const query = 'SELECT * FROM opcoes WHERE enquete_id = ?';
+  connection.query(query, [enqueteId], (err, result) => {
+      if (err) throw err;
+      res.json(result);
+  });
 });
 
 app.listen(PORT, () => {
