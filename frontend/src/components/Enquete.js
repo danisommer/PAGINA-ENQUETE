@@ -10,7 +10,7 @@ function Enquete({ id }) {
   const [dataInicio, setDataInicio] = useState(null);
   const [dataFim, setDataFim] = useState(null);
   const [titulo, setTitulo] = useState(null);
-
+  
   const navigate = useNavigate();
 
   useEffect(() => {
