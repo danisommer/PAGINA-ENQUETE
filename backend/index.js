@@ -1,8 +1,16 @@
 const express = require('express');
 const mysql = require('mysql');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 // Configuração da conexão com o MySQL
 const connection = mysql.createConnection({
@@ -63,6 +71,15 @@ app.get('/enquetes', (req, res) => {
 });
 
 // Rotas para manipulação de opções
+
+app.post('/votar', (req, res) => {
+  const { opcaoId } = req.body;
+  const query = 'UPDATE opcoes SET votos = votos + 1 WHERE id = ?';
+  connection.query(query, [opcaoId], (err, result) => {
+      if (err) throw err;
+      res.send('Voto registrado com sucesso');
+  });
+});
 
 // Rota para criar uma nova opção para uma enquete
 app.post('/opcoes', (req, res) => {
