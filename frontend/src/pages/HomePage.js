@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { listarEnquetes } from "../services/api.js"; 
+import { listarEnquetes } from "../services/api.js";
+import PreviaEnquete from "../components/PreviaEnquete.js"; 
+import "../assets/css/styles.css";
 
 function HomePage() {
   const [enquetes, setEnquetes] = useState([]);
@@ -44,43 +46,44 @@ function HomePage() {
   const { nonStarted, ongoing, finished } = categorizeEnquetes(enquetes);
 
   return (
-  <div>
-    <h1>PollBox</h1>
-    <Link to="/criar-enquete">
-      <button>Criar Nova Enquete</button>
-    </Link>
-    <section>
-      <h2>Não Iniciadas</h2>
-      <ul>
-        {nonStarted.map(enquete => (
-          <li key={enquete.id}>
-            <Link to={`/enquete/${enquete.id}`}>{enquete.titulo}</Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-    <section>
-      <h2>Em Andamento</h2>
-      <ul>
-        {ongoing.map(enquete => (
-          <li key={enquete.id}>
-            <Link to={`/enquete/${enquete.id}`}>{enquete.titulo}</Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-    <section>
-      <h2>Finalizadas</h2>
-      <ul>
-        {finished.map(enquete => (
-          <li key={enquete.id}>
-            <Link to={`/enquete/${enquete.id}`}>{enquete.titulo}</Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  </div>
-);
+    <div>
+      <h1>PollBox</h1>
+      <Link to="/criar-enquete">
+        <button>Criar Nova Enquete</button>
+      </Link>
+      {/* Integrando a função Enquete na página inicial */}
+      <section>
+        <h2>Não Iniciadas</h2>
+        <ul>
+          {nonStarted.map(enquete => (
+            <li key={enquete.id}>
+              <PreviaEnquete id={enquete.id} />
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <h2>Em Andamento</h2>
+        <ul>
+          {ongoing.map(enquete => (
+            <li key={enquete.id}>
+              <PreviaEnquete id={enquete.id} />
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <h2>Finalizadas</h2>
+        <ul>
+          {finished.map(enquete => (
+            <li key={enquete.id}>
+              <PreviaEnquete id={enquete.id} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
 }
 
 export default HomePage;

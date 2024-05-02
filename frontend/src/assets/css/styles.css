@@ -1,0 +1,133 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+label{
+    font-size: 18px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 400px;
+    align-items: center;
+
+}
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    margin: 10px; 
+}
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #999; /* Altere a cor do texto do botão desativado conforme necessário */
+  }
+  
+  button[disabled]:hover {
+    background-color: #ccc;
+  }
+
+  .enabled-button {
+    background-color: #dc3545;
+}
+
+  .enabled-button:hover {
+    background-color: #8b1925;
+}
+
+  a {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  form {
+    margin-top: 20px;
+  }
+  
+  section {
+    margin-top: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  input {
+    padding: 5px;
+    margin-right: 10px;
+  }
+  input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+    height: 30px; 
+    margin-bottom: 10px; 
+  }
+  
+  
+
+  
+  .enquete {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .enquete h3 {
+    margin-top: 0;
+  }
+  
+  .enquete p {
+    margin: 10px 0;
+  }
+  
+  .enquete ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .enquete li {
+    margin-bottom: 10px;
+  }
+  
+  .enquete button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .enquete button:hover {
+    background-color: #0056b3;
+  }

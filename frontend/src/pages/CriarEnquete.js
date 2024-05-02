@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { criarEnquete } from "../services/api.js"; 
+import { useNavigate } from "react-router-dom";
+import { criarEnquete, criarOpcao } from "../services/api.js"; 
 
 function CriarEnquete() {
+  const navigate = useNavigate();
   const [titulo, setTitulo] = useState("");
   const [dataInicio, setDataInicio] = useState("");
   const [horaInicio, setHoraInicio] = useState("");
   const [dataTermino, setDataTermino] = useState("");
   const [horaTermino, setHoraTermino] = useState("");
-  const [opcoes, setOpcoes] = useState(["", "", ""]); // Inicia com 3 opções
+  const [opcoes, setOpcoes] = useState(["", "", ""]);
+  const [erro, setErro] = useState(""); 
 
   const handleAddOpcao = () => {
-    setOpcoes([...opcoes, ""]); // Adiciona uma nova opção vazia
+    setOpcoes([...opcoes, ""]); 
   };
 
   const handleRemoveOpcao = (index) => {
-    if (opcoes.length > 3) {
-      const newOpcoes = [...opcoes];
-      newOpcoes.splice(index, 1); // Remove a opção no índice especificado
-      setOpcoes(newOpcoes);
-    } else {
-      alert("É necessário manter no mínimo 3 opções!");
-    }
+    const newOpcoes = [...opcoes];
+    newOpcoes.splice(index, 1);
+    setOpcoes(newOpcoes);
   };
 
   const handleChangeOpcao = (index, value) => {
@@ -30,12 +28,16 @@ function CriarEnquete() {
     setOpcoes(newOpcoes);
   };
 
+  const handleVoltar = () => {
+    navigate("/");
+  };  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     // Verificar se o título não está vazio
     if (titulo.trim() === "") {
-      alert("O título da enquete não pode estar vazio!");
+      setErro("O título da enquete não pode estar vazio!");
       return;
     }
   
@@ -43,32 +45,47 @@ function CriarEnquete() {
     const dataHoraInicio = new Date(`${dataInicio}T${horaInicio}`);
     const dataHoraTermino = new Date(`${dataTermino}T${horaTermino}`);
     if (dataHoraInicio >= dataHoraTermino) {
-      alert("A data de início deve ser anterior à data de término!");
+      setErro("A data de início deve ser anterior à data de término!");
       return;
     }
   
     // Verificar se há pelo menos três opções definidas
     const opcoesDefinidas = opcoes.filter(opcao => opcao.trim() !== "");
     if (opcoesDefinidas.length < 3) {
-      alert("É necessário definir pelo menos 3 opções para a enquete!");
+      setErro("É necessário definir pelo menos 3 opções para a enquete!");
       return;
     }
   
     try {
-      // Chama a função da API para criar uma nova enquete
-      const novaEnquete = await criarEnquete(titulo, dataHoraInicio.toISOString(), dataHoraTermino.toISOString());
+      const dataInicioString = `${dataInicio} ${horaInicio}`;
+      const dataTerminoString = `${dataTermino} ${horaTermino}`;
+    
+      // Criar a nova enquete
+      const novaEnquete = await criarEnquete(titulo, dataInicioString, dataTerminoString);
       console.log("Nova enquete criada:", novaEnquete);
-      // Aqui você pode adicionar mais lógica, como redirecionar para a página da enquete criada
+    
+      // Submeter as opções
+      await Promise.all(opcoes.map(async (opcao) => {
+        if (opcao.trim() !== "") {
+          console.log(novaEnquete.id);
+          await criarOpcao(novaEnquete.id, opcao); // Assumindo que o retorno de criarEnquete contém o ID da nova enquete
+        }
+      }));
+    
+      navigate(`/`);
+    
     } catch (error) {
       console.error("Erro ao criar enquete:", error.message);
     }
+    
   };
+
+  // Verifica se o formulário é inválido para desativar o botão de criar enquete
+  const formularioInvalido = titulo.trim() === "" || dataInicio === "" || horaInicio === "" || dataTermino === "" || horaTermino === "" || opcoes.filter(opcao => opcao.trim() !== "").length < 3;
 
   return (
     <div>
-      <Link to="/">
-        <button>Voltar para a página inicial</button>
-      </Link>
+      <button onClick={handleVoltar}>Voltar para a página inicial</button>
       <h1>Criar Nova Enquete</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -89,27 +106,31 @@ function CriarEnquete() {
         </label>
         <br />
         {opcoes.map((opcao, index) => (
-          <div key={index}>
-            <label>
-              Opção {index + 1}:
-              <input
-                type="text"
-                value={opcao}
-                onChange={(e) => handleChangeOpcao(index, e.target.value)}
-              />
-            </label>
-            {opcoes.length > 3 && ( // Mostra o botão de remover apenas se houver mais de 3 opções
-              <button type="button" onClick={() => handleRemoveOpcao(index)}>
-                Remover
-              </button>
-            )}
-          </div>
-        ))}
+            <div key={index}>
+                <label>
+                <button
+                    type="button"
+                    onClick={() => handleRemoveOpcao(index)}
+                    disabled={opcoes.length <= 3}
+                    className={opcoes.length > 3 ? "enabled-button" : ""}
+                >
+                    Remover
+                </button>
+                Opção {index + 1}:
+                <input
+                    type="text"
+                    value={opcao}
+                    onChange={(e) => handleChangeOpcao(index, e.target.value)}
+                />
+                </label>
+            </div>
+            ))}
         <button type="button" onClick={handleAddOpcao}>
           Adicionar Opção
         </button>
         <br />
-        <button type="submit">Criar Enquete</button>
+        <button type="submit" disabled={formularioInvalido} >Criar Enquete</button>
+        {erro && <p style={{color: 'red'}}>{erro}</p>}
       </form>
     </div>
   );

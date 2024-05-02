@@ -36,7 +36,8 @@ app.post('/enquetes', (req, res) => {
   const query = 'INSERT INTO enquetes (titulo, data_inicio, data_termino) VALUES (?, ?, ?)';
   connection.query(query, [titulo, data_inicio, data_termino], (err, result) => {
       if (err) throw err;
-      res.status(201).send('Enquete criada com sucesso');
+      const enqueteId = result.insertId; // Obtém o ID da enquete recém-criada
+      res.status(201).json({ id: enqueteId, message: 'Enquete criada com sucesso' });
   });
 });
 
@@ -53,13 +54,29 @@ app.put('/enquetes/:id', (req, res) => {
 
 // Rota para excluir uma enquete existente
 app.delete('/enquetes/:id', (req, res) => {
-  const id = req.params.id;
-  const query = 'DELETE FROM enquetes WHERE id = ?';
-  connection.query(query, [id], (err, result) => {
-      if (err) throw err;
-      res.send('Enquete excluída com sucesso');
+  const enqueteId = req.params.id;
+  
+  // First, delete associated options
+  const deleteOptionsQuery = 'DELETE FROM opcoes WHERE enquete_id = ?';
+  connection.query(deleteOptionsQuery, [enqueteId], (err, optionResult) => {
+    if (err) {
+      res.status(500).send('Erro ao excluir opções associadas');
+      return;
+    }
+
+    // After deleting options, delete the enquete
+    const deleteEnqueteQuery = 'DELETE FROM enquetes WHERE id = ?';
+    connection.query(deleteEnqueteQuery, [enqueteId], (err, enqueteResult) => {
+      if (err) {
+        res.status(500).send('Erro ao excluir enquete');
+        return;
+      }
+      
+      res.send('Enquete e opções associadas excluídas com sucesso');
+    });
   });
 });
+
 
 // Rota para listar todas as enquetes
 app.get('/enquetes', (req, res) => {
@@ -67,6 +84,20 @@ app.get('/enquetes', (req, res) => {
   connection.query(query, (err, result) => {
       if (err) throw err;
       res.json(result);
+  });
+});
+
+// Rota para obter detalhes de uma enquete específica
+app.get('/enquetes/:id', (req, res) => {
+  const id = req.params.id;
+  const query = 'SELECT * FROM enquetes WHERE id = ?';
+  connection.query(query, [id], (err, result) => {
+      if (err) throw err;
+      if (result.length === 0) {
+          res.status(404).send('Enquete não encontrada');
+      } else {
+          res.json(result[0]);
+      }
   });
 });
 

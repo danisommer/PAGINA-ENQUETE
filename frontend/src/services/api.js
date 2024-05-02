@@ -6,6 +6,15 @@ const api = axios.create({
   baseURL,
 });
 
+export const obterEnquete = async (id) => {
+  try {
+    const response = await api.get(`/enquetes/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data);
+  }
+};
+
 // Função para criar uma nova enquete
 export const criarEnquete = async (titulo, data_inicio, data_termino) => {
     try {
