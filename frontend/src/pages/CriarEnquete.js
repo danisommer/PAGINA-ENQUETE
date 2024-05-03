@@ -35,13 +35,11 @@ function CriarEnquete() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Verificar se o título não está vazio
     if (titulo.trim() === "") {
       setErro("O título da enquete não pode estar vazio!");
       return;
     }
   
-    // Verificar se a data de início é anterior à data de término
     const dataHoraInicio = new Date(`${dataInicio}T${horaInicio}`);
     const dataHoraTermino = new Date(`${dataTermino}T${horaTermino}`);
     if (dataHoraInicio >= dataHoraTermino) {
@@ -49,7 +47,6 @@ function CriarEnquete() {
       return;
     }
   
-    // Verificar se há pelo menos três opções definidas
     const opcoesDefinidas = opcoes.filter(opcao => opcao.trim() !== "");
     if (opcoesDefinidas.length < 3) {
       setErro("É necessário definir pelo menos 3 opções para a enquete!");
@@ -60,15 +57,13 @@ function CriarEnquete() {
       const dataInicioString = `${dataInicio} ${horaInicio}`;
       const dataTerminoString = `${dataTermino} ${horaTermino}`;
     
-      // Criar a nova enquete
       const novaEnquete = await criarEnquete(titulo, dataInicioString, dataTerminoString);
       console.log("Nova enquete criada:", novaEnquete);
     
-      // Submeter as opções
       await Promise.all(opcoes.map(async (opcao) => {
         if (opcao.trim() !== "") {
           console.log(novaEnquete.id);
-          await criarOpcao(novaEnquete.id, opcao); // Assumindo que o retorno de criarEnquete contém o ID da nova enquete
+          await criarOpcao(novaEnquete.id, opcao); 
         }
       }));
     
@@ -80,7 +75,6 @@ function CriarEnquete() {
     
   };
 
-  // Verifica se o formulário é inválido para desativar o botão de criar enquete
   const formularioInvalido = titulo.trim() === "" || dataInicio === "" || horaInicio === "" || dataTermino === "" || horaTermino === "" || opcoes.filter(opcao => opcao.trim() !== "").length < 3;
 
   return (
