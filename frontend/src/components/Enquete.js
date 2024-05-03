@@ -27,18 +27,18 @@ function Enquete({ id }) {
         setErro("Erro ao carregar opções da enquete. Tente novamente mais tarde.");
       }
     }
-
+  
     async function fetchInfoEnquete() {
       try {
         const enqueteInfo = await obterEnquete(id);
-        setDataInicio(new Date(enqueteInfo.data_inicio).toLocaleString());
-        setDataFim(new Date(enqueteInfo.data_termino).toLocaleString());
+        setDataInicio(new Date(enqueteInfo.data_inicio));
+        setDataFim(new Date(enqueteInfo.data_termino));
         setTitulo(enqueteInfo.titulo);
       } catch (error) {
         console.error("Erro ao carregar informações da enquete:", error.message);
       }
     }
-
+  
     fetchOpcoes();
     fetchInfoEnquete();
   }, [id]);
@@ -113,21 +113,21 @@ function Enquete({ id }) {
           {edicaoDataInicio ? (
             <input
               type="date"
-              value={dataInicio}
-              onChange={(e) => setDataInicio(e.target.value)}
+              value={dataInicio.toISOString().split('T')[0]}
+              onChange={(e) => setDataInicio(new Date(e.target.value))}
             />
           ) : (
-            `Data de início: ${dataInicio}`
+            `Data de início: ${dataInicio.toLocaleDateString()}`
           )}{" "}
           -{" "}
           {edicaoDataFim ? (
             <input
               type="date"
-              value={dataFim}
-              onChange={(e) => setDataFim(e.target.value)}
+              value={dataFim.toISOString().split('T')[0]}
+              onChange={(e) => setDataFim(new Date(e.target.value))}
             />
           ) : (
-            `Data de fim: ${dataFim}`
+            `Data de fim: ${dataFim.toLocaleDateString()}`
           )}
         </p>
       )}
