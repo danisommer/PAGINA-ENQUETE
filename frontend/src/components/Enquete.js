@@ -72,10 +72,8 @@ function Enquete({ id }) {
       };
   
       await editarEnquete(id, titulo, formatoDataSQL(new Date(dataInicio)), formatoDataSQL(new Date(dataFim)));
-  
-      const promises = opcoes.map(opcao => editarOpcao(opcao.id, opcao.descricao));
-      await Promise.all(promises);
-  
+      navigate("/");
+
     } catch (error) {
       console.error("Erro ao editar enquete:", error.message);
       setErro("Erro ao editar enquete. Tente novamente mais tarde.");
@@ -114,7 +112,7 @@ function Enquete({ id }) {
         <p>
           {edicaoDataInicio ? (
             <input
-              type="text"
+              type="date"
               value={dataInicio}
               onChange={(e) => setDataInicio(e.target.value)}
             />
@@ -124,7 +122,7 @@ function Enquete({ id }) {
           -{" "}
           {edicaoDataFim ? (
             <input
-              type="text"
+              type="date"
               value={dataFim}
               onChange={(e) => setDataFim(e.target.value)}
             />
