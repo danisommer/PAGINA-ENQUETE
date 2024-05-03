@@ -56,7 +56,6 @@ app.put('/enquetes/:id', (req, res) => {
 app.delete('/enquetes/:id', (req, res) => {
   const enqueteId = req.params.id;
   
-  // First, delete associated options
   const deleteOptionsQuery = 'DELETE FROM opcoes WHERE enquete_id = ?';
   connection.query(deleteOptionsQuery, [enqueteId], (err, optionResult) => {
     if (err) {
@@ -64,7 +63,6 @@ app.delete('/enquetes/:id', (req, res) => {
       return;
     }
 
-    // After deleting options, delete the enquete
     const deleteEnqueteQuery = 'DELETE FROM enquetes WHERE id = ?';
     connection.query(deleteEnqueteQuery, [enqueteId], (err, enqueteResult) => {
       if (err) {

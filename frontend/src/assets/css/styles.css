@@ -39,7 +39,7 @@ label{
   button[disabled] {
     background-color: #ccc;
     cursor: not-allowed;
-    color: #999; /* Altere a cor do texto do botão desativado conforme necessário */
+    color: #999; 
   }
   
   button[disabled]:hover {
