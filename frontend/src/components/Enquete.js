@@ -153,9 +153,6 @@ function Enquete({ id }) {
                 new Date() <= new Date(dataFim) && (
                   <button onClick={() => handleVotar(opcao.id)}>Votar</button>
                 )}
-              {edicaoAtivada && (
-                <button onClick={() => handleEditarOpcao(opcao.id, opcao.descricao)}>Salvar</button>
-              )}
             </li>
           ))}
         </ul>
