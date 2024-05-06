@@ -16,29 +16,29 @@ function Enquete({ id }) {
 
   const navigate = useNavigate();
 
+  const fetchOpcoes = async () => {
+    try {
+      const opcoesData = await listarOpcoesPorEnquete(id);
+      setOpcoes(opcoesData);
+      setErro(null);
+    } catch (error) {
+      console.error("Erro ao carregar opções da enquete:", error.message);
+      setErro("Erro ao carregar opções da enquete. Tente novamente mais tarde.");
+    }
+  };
+
+  const fetchInfoEnquete = async () => {
+    try {
+      const enqueteInfo = await obterEnquete(id);
+      setDataInicio(new Date(enqueteInfo.data_inicio));
+      setDataFim(new Date(enqueteInfo.data_termino));
+      setTitulo(enqueteInfo.titulo);
+    } catch (error) {
+      console.error("Erro ao carregar informações da enquete:", error.message);
+    }
+  };
+
   useEffect(() => {
-    async function fetchOpcoes() {
-      try {
-        const opcoesData = await listarOpcoesPorEnquete(id);
-        setOpcoes(opcoesData);
-        setErro(null);
-      } catch (error) {
-        console.error("Erro ao carregar opções da enquete:", error.message);
-        setErro("Erro ao carregar opções da enquete. Tente novamente mais tarde.");
-      }
-    }
-  
-    async function fetchInfoEnquete() {
-      try {
-        const enqueteInfo = await obterEnquete(id);
-        setDataInicio(new Date(enqueteInfo.data_inicio));
-        setDataFim(new Date(enqueteInfo.data_termino));
-        setTitulo(enqueteInfo.titulo);
-      } catch (error) {
-        console.error("Erro ao carregar informações da enquete:", error.message);
-      }
-    }
-  
     fetchOpcoes();
     fetchInfoEnquete();
   }, [id]);
@@ -95,6 +95,16 @@ function Enquete({ id }) {
       console.error("Erro ao editar opção:", error.message);
       setErro("Erro ao editar opção. Tente novamente mais tarde.");
     }
+  };
+
+  const handleCancelarEdicao = () => {
+    fetchInfoEnquete();
+    fetchOpcoes();
+
+    setEdicaoTitulo(false);
+    setEdicaoDataInicio(false);
+    setEdicaoDataFim(false);
+    setEdicaoAtivada(false);
   };
 
   return (
@@ -162,12 +172,7 @@ function Enquete({ id }) {
       {edicaoTitulo || edicaoDataInicio || edicaoDataFim || edicaoAtivada ? (
         <>
           <button onClick={handleEditarEnquete}>Salvar Alterações</button>
-          <button onClick={() => {
-            setEdicaoTitulo(false);
-            setEdicaoDataInicio(false);
-            setEdicaoDataFim(false);
-            setEdicaoAtivada(false);
-          }}>Cancelar Edição</button>
+          <button onClick={handleCancelarEdicao}>Cancelar Edição</button>
         </>
       ) : (
         <button onClick={() => {
@@ -177,6 +182,7 @@ function Enquete({ id }) {
           setEdicaoAtivada(true);
         }}>
           Editar Enquete
+
         </button>
       )}
       <button onClick={handleExcluirEnquete}>Excluir Enquete</button>
