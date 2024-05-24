@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'DZS2102',
+  password: 'dzs2102',
   database: 'sistema_votacao',
   insecureAuth : true
 });
